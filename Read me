@@ -1,0 +1,31 @@
+File 1: README.md
+Stock Pricing Ensemble Model
+This repository contains a stock pricing ensemble model that leverages momentum, value, and quality factors. The model uses the Pearson coefficient and fractal neural nets with Fourier series to identify various factor signals.
+Table of Contents
+Introduction
+Installation
+Usage
+Contributing
+License
+Introduction
+This project aims to build a robust stock pricing model using an ensemble approach. The model integrates multiple financial factors, employs advanced statistical techniques, and utilizes neural networks to achieve accurate predictions.
+Installation
+Clone the repository.
+Navigate to the project directory.
+Install the required dependencies: pip install -r requirements.txt
+Usage
+Preprocess the data: python src/data_preprocessing.py
+Generate features: python src/feature_engineering.py
+Train the model: python src/model.py
+Run tests: pytest tests/test_model.py
+Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
+License
+This project is licensed under the MIT License.
+File 2: data_description.md
+Data
+stock_data.csv: Contains historical stock prices.
+factor_data.csv: Contains data for momentum, value, and quality factors.
+https://github.com/Cvmcosta/ltijs-sequelize
+https://github.com/RaviRam-Gummuluri/Discrete-Math
+https://github.com/modfreq/Next.js-Starter
