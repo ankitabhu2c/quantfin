@@ -1,0 +1,42 @@
+Absolutely! ThymeBoost is another great option for time series forecasting, making it suitable for stock price prediction. Here's how you can use it in Python:
+Installation:
+pip install ThymeBoost
+
+
+Data Preparation:
+Similar to before, gather historical stock data and engineer features.
+Ensure your data is in a pandas DataFrame with a datetime index.
+Model Training:
+from ThymeBoost import ThymeBoost
+
+model = ThymeBoost()
+model.fit(y_train)  # Input only the target variable (stock prices)
+
+
+Prediction:
+y_pred = model.predict(fh)  # fh is the forecast horizon (number of periods to predict)
+
+
+Evaluation:
+Use MSE, MAE, or other relevant metrics to assess model performance.
+Key Advantages of ThymeBoost:
+Automatic time series decomposition (trend, seasonality).
+Flexibility to combine different forecasting models.
+Simple API.
+Example:
+import pandas as pd
+from ThymeBoost import ThymeBoost
+
+# ... (Load and prepare data as before)
+
+model = ThymeBoost(
+    trend_estimator='linear',
+    seasonal_estimator='fourier',
+    exogenous_estimator='xgb'
+)
+model.fit(y_train)
+y_pred = model.predict(fh=30)  # Predict next 30 days
+
+
+Feel free to experiment with different estimators and hyperparameters to fine-tune the model.
+Let me know if you have any specific questions or would like a more tailored example!
