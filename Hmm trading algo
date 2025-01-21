@@ -1,0 +1,73 @@
+import yfinance as yf
+import pandas as pd
+from hmmlearn import hmm
+from sklearn.preprocessing import StandardScaler
+
+# --- 1. Fetch Stock Data using yfinance ---
+
+# Define the stock ticker symbol
+ticker = "AAPL"  # Example: Apple
+
+# Download historical data (you can adjust the period)
+data = yf.download(ticker, period="5y")  # Download 5 years of data
+
+# Select relevant features (e.g., daily price changes, volume)
+features = data[['Close', 'Volume']]
+
+# --- 2. Preprocess the Data ---
+
+# Calculate daily price changes (percentage change)
+features['Daily_Return'] = features['Close'].pct_change() * 100
+features.dropna(inplace=True)  # Remove the first row with NaN
+
+# Normalize the features
+scaler = StandardScaler()
+features[['Close', 'Volume', 'Daily_Return']] = scaler.fit_transform(
+    features[['Close', 'Volume', 'Daily_Return']]
+)
+
+# --- 3. Train the Hidden Markov Model ---
+
+# Define the model
+model = hmm.GaussianHMM(n_components=3, covariance_type="full")
+
+# Fit the model to the data
+model.fit(features[['Close', 'Volume', 'Daily_Return']])
+
+# --- 4. Make Predictions ---
+
+# Get the most likely sequence of hidden states
+hidden_states = model.predict(features[['Close', 'Volume', 'Daily_Return']])
+
+# Get the probabilities of being in each state at each time step
+state_probabilities = model.predict_proba(features[['Close', 'Volume', 'Daily_Return']])
+
+# --- 5.  Example Trading Logic (Trend Reversal) ---
+
+# Create a signal column (initialize with 0 = no action)
+data['signal'] = 0
+
+# Loop through the hidden states and probabilities
+for i in range(1, len(hidden_states)):
+    # Check for a transition from uptrend (state 0) to downtrend (state 1)
+    if (
+        hidden_states[i - 1] == 0
+        and hidden_states[i] == 1
+        and state_probabilities[i, 1] > 0.7
+    ):  # Add a threshold
+        data['signal'][i] = -1  # Sell signal
+
+    # Check for a transition from downtrend (state 1) to uptrend (state 0)
+    if (
+        hidden_states[i - 1] == 1
+        and hidden_states[i] == 0
+        and state_probabilities[i, 0] > 0.7
+    ):  # Add a threshold
+        data['signal'][i] = 1  # Buy signal
+
+# --- 6.  Analyze and Backtest ---
+
+# Print the signals
+print(data[data['signal'] != 0])
+
+# ... (Add your backtesting and performance evaluation logic here) ...
